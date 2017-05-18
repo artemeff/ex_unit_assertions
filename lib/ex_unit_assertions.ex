@@ -2,27 +2,26 @@ defmodule ExUnitAssertions do
   @doc """
   Matches pattern in list:
 
-      > assert_match_in?(1, [1, 2, 3])
-      true
+      > match_in?(1, [1, 2, 3])
+      1
 
-      > assert_match_in?(%{a: 1}, [%{a: 1, b: 2}, %{a: 2, b: 3}])
-      true
+      > match_in?(%{a: 1}, [%{a: 1, b: 2}, %{a: 2, b: 3}])
+      %{a: 1, b: 2}
 
-      > assert_match_in?(%{a: 1}, [%{a: 2, b: 2}, %{a: 2, b: 3}])
-      false
+      > match_in?(%{a: 1}, [%{a: 2, b: 2}, %{a: 2, b: 3}])
+      raised error
 
       > a = 1
-      > assert_match_in?(%{a: ^a}, [%{a: 1, b: 2}, %{a: 2, b: 3}])
-      true
+      > match_in?(%{a: ^a}, [%{a: 1, b: 2}, %{a: 2, b: 3}])
+      %{a: 1, b: 2}
 
-      > assert_match_in?(%{a: 1, b: b}, [%{a: 1, b: 2}, %{a: 2, b: 3}])
-      true
-
+      > match_in?(%{a: 1, b: b}, [%{a: 1, b: 2}, %{a: 2, b: 3}])
+      %{a: 1, b: 2}
       > b
       2
   """
-  @spec assert_match_in?(term, list(term)) :: true | false
-  defmacro assert_match_in?(pattern, expr) do
+  @spec match_in?(term, list(term)) :: true | false
+  defmacro match_in?(pattern, expr) do
     left = Macro.expand(pattern, __CALLER__)
     vars = collect_vars_from_pattern(left)
     pins = collect_pins_from_pattern(left)
@@ -53,8 +52,7 @@ defmodule ExUnitAssertions do
                     ExUnit.Assertions.__pins__(unquote(pins))
       end
 
-      assert unquote(pattern) = matching
-      matching
+      unquote(pattern) = matching
     end
   end
 
